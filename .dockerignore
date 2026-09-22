@@ -1,0 +1,7 @@
+.git
+.gitignore
+backend/build/
+backend/build-check/
+backend/build-final/
+backend/music/**/*.mp3
+backend/music/**/*.ogg
