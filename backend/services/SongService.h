@@ -1,0 +1,4 @@
+#pragma once
+#include "../data_structures/CircularSongList.h"
+#include <string>
+class SongService { CircularSongList songs_; std::string path_; public: explicit SongService(std::string path); void load(); void save() const; std::vector<Song> all() const {return songs_.all();} Song* find(int id){return songs_.findSong(id);} std::optional<Song> select(int id){return songs_.setCurrent(id);} std::optional<Song> next(){return songs_.getNext();} std::optional<Song> previous(){return songs_.getPrevious();} std::vector<Song> search(const std::string&q)const{return songs_.search(q);} std::vector<Song> language(const std::string&q)const{return songs_.filterLanguage(q);} std::vector<Song> genre(const std::string&q)const{return songs_.filterGenre(q);} bool remove(int id){return songs_.deleteSong(id);} void add(const Song&s){songs_.insertSong(s);} nlohmann::json debug()const{return songs_.debug();} };
