@@ -1,4 +1,5 @@
 #include "server.h"
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -14,4 +15,4 @@ static crow::response serveFile(const std::string& path){
 	else if(hasSuffix(path,".mp3")) response.set_header("Content-Type","audio/mpeg");
 	return response;
 }
-void TuneSphereServer::run(){ songs.load();playlists.load();user.load();registerSongRoutes(*this);registerPlaylistRoutes(*this);registerUserRoutes(*this); const auto frontend=std::filesystem::absolute("../frontend").lexically_normal().string(); const auto music=std::filesystem::absolute("music").lexically_normal().string(); CROW_ROUTE(app,"/")([frontend]{return serveFile(frontend+"/index.html");}); CROW_ROUTE(app,"/music/<path>")([music](std::string file){return serveFile(music+"/"+file);}); CROW_ROUTE(app,"/<path>")([frontend](std::string file){return serveFile(frontend+"/"+file);}); std::cout<<"TuneSphere: http://localhost:8080 | songs: "<<songs.all().size()<<"\n";app.port(8080).multithreaded().run(); }
+void TuneSphereServer::run(){ songs.load();playlists.load();user.load();registerSongRoutes(*this);registerPlaylistRoutes(*this);registerUserRoutes(*this); const auto frontend=std::filesystem::absolute("../frontend").lexically_normal().string(); const auto music=std::filesystem::absolute("music").lexically_normal().string(); const auto portEnv=std::getenv("PORT"); const auto port=static_cast<unsigned short>(portEnv?std::atoi(portEnv):8080); CROW_ROUTE(app,"/")([frontend]{return serveFile(frontend+"/index.html");}); CROW_ROUTE(app,"/music/<path>")([music](std::string file){return serveFile(music+"/"+file);}); CROW_ROUTE(app,"/<path>")([frontend](std::string file){return serveFile(frontend+"/"+file);}); std::cout<<"TuneSphere: http://localhost:"<<port<<" | songs: "<<songs.all().size()<<"\n";app.port(port).multithreaded().run(); }
